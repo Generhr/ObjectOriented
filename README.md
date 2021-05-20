@@ -2,6 +2,8 @@
 
 Ported most of the MDN prototype as well as some custom methods for use with ahk objects and adjusted the base index of arrays to zero.
 
+The old AutoHotkey v1.1.* version can be found [here](https://github.com/Onimuru/ObjectOriented/tree/13d4c94a13416d0ec96a4f69877ce025af3e2cff).
+
 ## Array methods
 
 #### `array.Print()`
