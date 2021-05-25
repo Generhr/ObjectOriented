@@ -10,31 +10,32 @@ PatchArrayPrototype()
 ;============== Function ======================================================;
 
 Print(input) {
-	switch (Type(input)) {
-		case "Array":
-			if (s := input.Length) {
-				for i, v in (r := "[", input) {
-					if (!IsSet(v)) {
-						v := ""
-					}
+	if (input is Array) {
+		if (s := input.Length) {
+			for i, v in (r := "[", input) {
+				if (!IsSet(v)) {
+					v := ""
+				}
 
-					r .= ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < s) ? (", ") : ("]"))
-				}
+				r .= ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < s) ? (", ") : ("]"))
 			}
-			else {
-				r := "[]"
+		}
+		else {
+			r := "[]"
+		}
+	}
+	else if (input is Object) {
+		if (c := ObjOwnPropCount(input)) {
+			for k, v in (r := "{", input.OwnProps()) {
+				r .= k . ": " . ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < c) ? (", ") : ("}"))
 			}
-		case "Object":
-			if (c := ObjOwnPropCount(input)) {
-				for k, v in (r := "{", input.OwnProps()) {
-					r .= k . ": " . ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < c) ? (", ") : ("}"))
-				}
-			}
-			else {
-				r := "{}"
-			}
-		default:
-			r := input
+		}
+		else {
+			r := "{}"
+		}
+	}
+	else {
+		r := input
 	}
 
 	return (r)

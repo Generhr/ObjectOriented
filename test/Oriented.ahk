@@ -22,7 +22,7 @@ exit
 
 ;=============== Hotkey =======================================================;
 
-#HotIf (WinActive(A_ScriptName) || WinActive("ObjectOriented.ahk"))
+#HotIf (WinActive(A_ScriptName))
 
 	$F10:: {
 		ListVars
