@@ -1,11 +1,6 @@
-﻿;============ Auto-Execute ====================================================;
-;======================================================  Setting  ==============;
+;============ Auto-Execute ====================================================;
 
-#SingleInstance
-#Warn All, MsgBox
-#Warn LocalSameAsGlobal, Off
-
-ProcessSetPriority("Normal")
+#Requires AutoHotkey v2.0-beta
 
 ;======================================================  Include  ==============;
 
@@ -14,8 +9,18 @@ ProcessSetPriority("Normal")
 #Include %A_ScriptDir%\..\..\Assert\Assert.ahk
 #Include %A_ScriptDir%\..\..\Console\Console.ahk
 
+;======================================================  Setting  ==============;
+
+#SingleInstance
+#Warn All, MsgBox
+#Warn LocalSameAsGlobal, Off
+
+ListLines(False)
+ProcessSetPriority("Normal")
+
 ;======================================================== Test ================;
 ;--------------------------------------------------------  Log  ----------------;
+
 Console.Log(Assert.CreateReport())
 
 exit
