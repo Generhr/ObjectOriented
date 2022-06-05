@@ -1,24 +1,28 @@
-﻿;============ Auto-Execute ====================================================;
+;============ Auto-Execute ====================================================;
+
+#Requires AutoHotkey v2.0-beta
+
+;======================================================  Include  ==============;
+
+#Include %A_ScriptDir%\..\..\Core.ah2
+
+#Include %A_ScriptDir%\..\..\Assert\Assert.ah2
+#Include %A_ScriptDir%\..\..\Console\Console.ah2
+
 ;======================================================  Setting  ==============;
 
 #SingleInstance
 #Warn All, MsgBox
 #Warn LocalSameAsGlobal, Off
 
+ListLines(False)
 ProcessSetPriority("Normal")
-
-;======================================================  Include  ==============;
-
-#Include %A_ScriptDir%\..\..\Core.ahk
-
-#Include %A_ScriptDir%\..\..\Assert\Assert.ahk
-#Include %A_ScriptDir%\..\..\Console\Console.ahk
 
 ;======================================================== Test ================;
 ;-------------------------------------------------------  Range  ---------------;
 Assert.SetLabel("Range")
 
-For i, test in [[10, "", "", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], [1, 20, "", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]], [5, 20, "", [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]], [0, 30, 3, [0, 3, 6, 9, 12, 15, 18, 21, 24, 27]], [0, 50, 5, [0, 5, 10, 15, 20, 25, 30, 35, 40, 45]], [2, 25, 2, [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]], [0, 30, 4, [0, 4, 8, 12, 16, 20, 24, 28]], [15, 25, 3, [15, 18, 21, 24]], [25, 2, -2, [25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3]], [30, 1, -4, [30, 26, 22, 18, 14, 10, 6, 2]], [25, -6, -3, [25, 22, 19, 16, 13, 10, 7, 4, 1, -2, -5]]] {
+for test in [[10, "", "", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], [1, 20, "", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]], [5, 20, "", [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]], [0, 30, 3, [0, 3, 6, 9, 12, 15, 18, 21, 24, 27]], [0, 50, 5, [0, 5, 10, 15, 20, 25, 30, 35, 40, 45]], [2, 25, 2, [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]], [0, 30, 4, [0, 4, 8, 12, 16, 20, 24, 28]], [15, 25, 3, [15, 18, 21, 24]], [25, 2, -2, [25, 23, 21, 19, 17, 15, 13, 11, 9, 7, 5, 3]], [30, 1, -4, [30, 26, 22, 18, 14, 10, 6, 2]], [25, -6, -3, [25, 22, 19, 16, 13, 10, 7, 4, 1, -2, -5]]] {
 	Assert.IsEqual(Range(test[0], test[1], test[2] || 1), test[3])
 }
 
@@ -356,8 +360,8 @@ Assert.SetLabel("Some")
 Assert.IsTrue([1, 2, 3, 4, 5].Some((value, *) => (Mod(value, 2) == 0)))
 Assert.IsFalse([1, 3, 5, 7, 9].Some((value, *) => (Mod(value, 2) == 0)))
 
-;-------------------------------------------------------- Sort ----------------;
-Assert.SetLabel("Sort")  ;~ It is no longer possible to compare strings with greater than/less than and so `callback` is now a required parameter.
+;-------------------------------------------------------- Sort ----------------;  ;~ It is no longer possible to compare strings with greater than/less than and so `callback` is now a required parameter.
+Assert.SetLabel("Sort")
 
 Assert.IsEqual(["March", "Jan", "Feb", "Dec"].Sort((value1, value2) => (StrCompare(value1, value2, True))), ["Dec", "Feb", "Jan", "March"])
 Assert.IsEqual([1, 30, 4, 21, 100000].Sort((value1, value2) => ((value1 < value2) ? (-1) : ((value1 > value2) ? (1) : (0)))), [1, 4, 21, 30, 100000])
@@ -400,6 +404,8 @@ Assert.IsEqual(test, [1, "", 3, 4, 5, 6])
 
 Console.Log(Assert.CreateReport())
 
+;=======================================================  Other  ===============;
+
 exit
 
 ;=============== Hotkey =======================================================;
@@ -408,6 +414,8 @@ exit
 
 	$F10:: {
 		ListVars
+
+		KeyWait("F10")
 	}
 
 	~$^s:: {
