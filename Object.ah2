@@ -38,15 +38,17 @@ PatchObjectPrototype() {
 	Object.Prototype.DefineProp("Print", {Call: Print})
 
 	Print(this) {
-		if (c := ObjOwnPropCount(this)) {
-			for k, v in (r := "{", this.OwnProps()) {
-				r .= k . ": " . ((IsObject(v)) ? ((v.HasProp("Print")) ? (v.Print()) : (Type(v))) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < c) ? (", ") : ("}"))
+		if (count := ObjOwnPropCount(this)) {
+			string := "{"
+
+			for key, value in this.OwnProps() {
+				string .= key . ": " . ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
 			}
 		}
 		else {
-			r := "{}"
+			string := "{}"
 		}
 
-		return (r)
+		return (string)
 	}
 }
