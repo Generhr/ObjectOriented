@@ -405,14 +405,14 @@ Console.Log(Assert.CreateReport())
 
 ;=======================================================  Other  ===============;
 
-exit
+Exit()
 
 ;=============== Hotkey =======================================================;
 
 #HotIf (WinActive(A_ScriptName))
 
 	$F10:: {
-		ListVars
+		ListVars()
 
 		KeyWait("F10")
 	}
@@ -421,7 +421,11 @@ exit
 		Critical(True)
 
 		Sleep(200)
-		Reload
+		Reload()
 	}
 
 #HotIf
+
+~$Escape:: {
+	ExitApp()
+}
