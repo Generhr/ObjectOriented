@@ -32,34 +32,38 @@ PatchArrayPrototype()
 
 Print(input) {
 	if (input is Array) {
-		if (s := input.Length) {
-			for i, v in (r := "[", input) {
-				if (!IsSet(v)) {
-					v := ""
+		if (length := input.Length) {
+			string := "["
+
+			for value in input {
+				if (!IsSet(value)) {
+					value := ""
 				}
 
-				r .= ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < s) ? (", ") : ("]"))
+				string .= ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
 			}
 		}
 		else {
-			r := "[]"
+			string := "[]"
 		}
 	}
 	else if (input is Object) {
-		if (c := ObjOwnPropCount(input)) {
-			for k, v in (r := "{", input.OwnProps()) {
-				r .= k . ": " . ((IsObject(v)) ? (Print(v)) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < c) ? (", ") : ("}"))
+		if (count := ObjOwnPropCount(input)) {
+			string := "{"
+
+			for key, value in (input.OwnProps()) {
+				string .= key . ": " . ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
 			}
 		}
 		else {
-			r := "{}"
+			string := "{}"
 		}
 	}
 	else {
-		r := input
+		string := input
 	}
 
-	return (r)
+	return (string)
 }
 
 ;* Range(start[, stop, step])
@@ -174,20 +178,22 @@ PatchArrayPrototype() {
 	Array.Prototype.DefineProp("Print", {Call: Print})
 
 	Print(this) {
-		if (s := this.Length) {
-			for i, v in (r := "[", this) {
-				if (!IsSet(v)) {
-					v := ""
+		if (length := this.Length) {
+			string := "["
+
+			for value in this {
+				if (!IsSet(value)) {
+					value := ""
 				}
 
-				r .= ((IsObject(v)) ? ((v.HasProp("Print")) ? (v.Print()) : (Type(v))) : ((IsNumber(v)) ? (RegExReplace(v, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format("`"{}`"", v)))) . ((A_Index < s) ? (", ") : ("]"))
+				string .= ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
 			}
 		}
 		else {
-			r := "[]"
+			string := "[]"
 		}
 
-		return (r)
+		return (string)
 	}
 
 	;------------------------------------------------------  Compact  --------------;
