@@ -92,9 +92,9 @@ PatchArrayPrototype() {
 
 	Default__Item_Get := Array.Prototype.GetOwnPropDesc("__Item").Get, Default__Item_Set := Array.Prototype.GetOwnPropDesc("__Item").Set  ;* Store the defualt implementation in a variable. This is done so that a reference can be retained even if the defualt implementation is deleted/overritten.
 
-	Array.Prototype.DefineProp("__Item", {Get: Custom__Item_Get, Set: Custom__Item_Set})  ;* Override the default implementation with a custom version.
+	Array.Prototype.DefineProp("__Item", {Get: __Custom__Item_Get, Set: __Custom__Item_Set})  ;* Override the default implementation with a custom version.
 
-	Custom__Item_Get(this, zeroIndex) {
+	__Custom__Item_Get(this, zeroIndex) {
 		try {
 			return (Default__Item_Get(this, zeroIndex + (zeroIndex >= 0)))  ;* Delegate to the default implementation.
 		}
@@ -106,7 +106,7 @@ PatchArrayPrototype() {
 		}
 	}
 
-	Custom__Item_Set(this, value, zeroIndex) {
+	__Custom__Item_Set(this, value, zeroIndex) {
 		try {
 			return (Default__Item_Set(this, value, zeroIndex + (zeroIndex >= 0)))
 		}
@@ -122,9 +122,9 @@ PatchArrayPrototype() {
 
 	Default__Enum_Call := Array.Prototype.GetOwnPropDesc("__Enum").Call
 
-	Array.Prototype.DefineProp("__Enum", {Call: Custom__Enum_Call})  ;* Override the default dispatcher with a custom version.
+	Array.Prototype.DefineProp("__Enum", {Call: __Custom__Enum_Call})  ;* Override the default dispatcher with a custom version.
 
-	Custom__Enum_Call(this, numberOfVars) {
+	__Custom__Enum_Call(this, numberOfVars) {
 		DefaultEnum := Default__Enum_Call(this, numberOfVars)  ;* Have the default dispatcher provide the original one based enumerator implementation.
 
 		switch (numberOfVars) {
@@ -175,9 +175,9 @@ PatchArrayPrototype() {
 	;* array.Print()
 	;* Description:
 		;* Converts the array into a string to more easily see the structure.
-	Array.Prototype.DefineProp("Print", {Call: Print})
+	Array.Prototype.DefineProp("Print", {Call: __Print})
 
-	Print(this) {
+	__Print(this) {
 		if (length := this.Length) {
 			string := "["
 
@@ -201,9 +201,9 @@ PatchArrayPrototype() {
 	;* array.Compact([recursive])
 	;* Description:
 		;* Remove all falsy values from an array.
-	Array.Prototype.DefineProp("Compact", {Call: Compact})
+	Array.Prototype.DefineProp("Compact", {Call: __Compact})
 
-	Compact(this, recursive := 0) {
+	__Compact(this, recursive := 0) {
 		for i, v in (r := [], this) {
 			if (v) {
 				r.Push((recursive && v is Array) ? (v.Compact(recursive)) : (v))
@@ -218,9 +218,9 @@ PatchArrayPrototype() {
 	;* array.Empty()
 	;* Description:
 		;* Removes all elements from an array.
-	Array.Prototype.DefineProp("Empty", {Call: Empty})
+	Array.Prototype.DefineProp("Empty", {Call: __Empty})
 
-	Empty(this) {
+	__Empty(this) {
 		this.RemoveAt(0, this.Length)
 
 		return (this)
@@ -231,9 +231,9 @@ PatchArrayPrototype() {
 	;* array.Remove(value)
 	;* Description:
 		;* Removes all occurences of `value` from an array.
-	Array.Prototype.DefineProp("Remove", {Call: Remove})
+	Array.Prototype.DefineProp("Remove", {Call: __Remove})
 
-	Remove(this, value) {
+	__Remove(this, value) {
 		s := this.Length, i := -1
 
 		while (++i != s) {
@@ -250,9 +250,9 @@ PatchArrayPrototype() {
 	;* array.Sample(number)
 	;* Description:
 		;* Returns a new array with `number` random elements from an array.
-	Array.Prototype.DefineProp("Sample", {Call: Sample})
+	Array.Prototype.DefineProp("Sample", {Call: __Sample})
 
-	Sample(this, number) {
+	__Sample(this, number) {
 		if (!this.Length) {
 			throw (IndexError("The array is empty.", -1))
 		}
@@ -265,9 +265,9 @@ PatchArrayPrototype() {
 	;* array.Shuffle([callback])
 	;* Description:
 		;* See https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle.
-	Array.Prototype.DefineProp("Shuffle", {Call: Shuffle})
+	Array.Prototype.DefineProp("Shuffle", {Call: __Shuffle})
 
-	Shuffle(this, callback := "") {
+	__Shuffle(this, callback := "") {
 		if (callback && !(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -288,9 +288,9 @@ PatchArrayPrototype() {
 	;* array.Swap(index1, index2)
 	;* Description:
 		;* Swap any two elements in an array.
-	Array.Prototype.DefineProp("Swap", {Call: Swap})
+	Array.Prototype.DefineProp("Swap", {Call: __Swap})
 
-	Swap(this, index1, index2) {
+	__Swap(this, index1, index2) {
 		if (this.Length < 2) {
 			throw (IndexError("The array has less than 2 elements.", -1))
 		}
@@ -305,9 +305,9 @@ PatchArrayPrototype() {
 	;* array.Unique()
 	;* Description:
 		;* Removes all duplicate values from an array such that all remaining values are unique.
-	Array.Prototype.DefineProp("Unique", {Call: Unique})
+	Array.Prototype.DefineProp("Unique", {Call: __Unique})
 
-	Unique(this) {
+	__Unique(this) {
 		i := this.Length
 
 		while (--i != -1) {  ;* This is basically a `array.LastIndexOf()` method with a `array.IndexOf()` method inside of it but more efficient than using those methods as is.
@@ -329,9 +329,9 @@ PatchArrayPrototype() {
 	;* array.Concat(values*)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat.
-	Array.Prototype.DefineProp("Concat", {Call: Concat})
+	Array.Prototype.DefineProp("Concat", {Call: __Concat})
 
-	Concat(this, values*) {
+	__Concat(this, values*) {
 		for i, v in (r := this.Clone(), values) {  ;~ Original array is untouched.
 			if (v is Array) {
 				if (v.Length) {  ;* Ignore if empty.
@@ -353,9 +353,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every.
 	;* Note:
 		;~ Calling this method on an empty array will return true for any condition.
-	Array.Prototype.DefineProp("Every", {Call: Every})
+	Array.Prototype.DefineProp("Every", {Call: __Every})
 
-	Every(this, callback) {
+	__Every(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -383,9 +383,9 @@ PatchArrayPrototype() {
 	;* array.Fill(value[, start, end])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill.
-	Array.Prototype.DefineProp("Fill", {Call: Fill})
+	Array.Prototype.DefineProp("Fill", {Call: __Fill})
 
-	Fill(this, value, start := 0, end := "") {
+	__Fill(this, value, start := 0, end := "") {
 		loop (start := (start >= 0) ? (Min(s := this.Length, start)) : (Max((s := this.Length) + start, 0)), ((end != "") ? ((end >= 0) ? (Min(s, end)) : (Max(s + end, 0))) : s) - start) {
 			this[start++] := value
 		}
@@ -398,9 +398,9 @@ PatchArrayPrototype() {
 	;* array.Filter(callback)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter.
-	Array.Prototype.DefineProp("Filter", {Call: Filter})
+	Array.Prototype.DefineProp("Filter", {Call: __Filter})
 
-	Filter(this, callback) {
+	__Filter(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -428,9 +428,9 @@ PatchArrayPrototype() {
 	;* array.Find(callback)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find.
-	Array.Prototype.DefineProp("Find", {Call: Find})
+	Array.Prototype.DefineProp("Find", {Call: __Find})
 
-	Find(this, callback) {
+	__Find(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -456,9 +456,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex.
 	;* Note:
 		;~ If the index of the first element in the array that passes the test is 0, the return value of findIndex will be interpreted as Falsy in conditional statements.
-	Array.Prototype.DefineProp("FindIndex", {Call: FindIndex})
+	Array.Prototype.DefineProp("FindIndex", {Call: __FindIndex})
 
-	FindIndex(this, callback) {
+	__FindIndex(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -484,9 +484,9 @@ PatchArrayPrototype() {
 	;* array.Flat([depth])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat.
-	Array.Prototype.DefineProp("Flat", {Call: Flat})
+	Array.Prototype.DefineProp("Flat", {Call: __Flat})
 
-	Flat(this, depth := 1) {
+	__Flat(this, depth := 1) {
 		for i, v in (r := [], this) {
 			if (v is Array && depth > 0) {
 				r := r.Concat(v.Flat(depth - 1))
@@ -504,9 +504,9 @@ PatchArrayPrototype() {
 	;* array.ForEach(callback)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach.
-	Array.Prototype.DefineProp("ForEach", {Call: ForEach})
+	Array.Prototype.DefineProp("ForEach", {Call: __ForEach})
 
-	ForEach(this, callback) {
+	__ForEach(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -542,9 +542,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf.
 	;* Note:
 		;~ Strings comparisons are case-sensitive.
-	Array.Prototype.DefineProp("IndexOf", {Call: IndexOf})
+	Array.Prototype.DefineProp("IndexOf", {Call: __IndexOf})
 
-	IndexOf(this, needle, start := 0) {
+	__IndexOf(this, needle, start := 0) {
 		loop (s := this.Length, start := (start >= 0) ? (Min(s, start)) : (Max(s + start, 0)), s - start) {
 			if (this[start] == needle) {
 				return (start)
@@ -561,9 +561,9 @@ PatchArrayPrototype() {
 	;* array.Join([delimiter])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join.
-	Array.Prototype.DefineProp("Join", {Call: Join})
+	Array.Prototype.DefineProp("Join", {Call: __Join})
 
-	Join(this, delimiter := ", ") {
+	__Join(this, delimiter := ", ") {
 		for i, v in (m := this.length - 1, this) {
 			r .= (IsObject(v)) ? ((v is Array) ? (v.Join(delimiter)) : (Type(v))) : (v)
 
@@ -582,9 +582,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf.
 	;* Note:
 		;~ Strings comparisons are case-sensitive.
-	Array.Prototype.DefineProp("LastIndexOf", {Call: LastIndexOf})
+	Array.Prototype.DefineProp("LastIndexOf", {Call: __LastIndexOf})
 
-	LastIndexOf(this, needle, start := -1) {
+	__LastIndexOf(this, needle, start := -1) {
 		start := (start >= 0) ? (Min(this.Length - 1, start + 1)) : (Max(this.Length + start + 1, -1))
 
 		while (--start != -1) {
@@ -601,9 +601,9 @@ PatchArrayPrototype() {
 	;* array.Map(callback)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map.
-	Array.Prototype.DefineProp("Map", {Call: Map})
+	Array.Prototype.DefineProp("Map", {Call: __Map})
 
-	Map(this, callback) {
+	__Map(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -625,9 +625,9 @@ PatchArrayPrototype() {
 	;* array.Push(values*)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push.
-	Array.Prototype.DefineProp("Push", {Call: Push})
+	Array.Prototype.DefineProp("Push", {Call: __Push})
 
-	Push(this, values*) {
+	__Push(this, values*) {
 		this.InsertAt(s := this.Length, values*)
 
 		return (s + values.Length)
@@ -640,9 +640,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce.
 	;* Note:
 		;~ If `initialValue` is not provided, `callback` will be executed starting at index 1, skipping the first index. If `initialValue` is provided, it will start at index 0.
-	Array.Prototype.DefineProp("Reduce", {Call: Reduce})
+	Array.Prototype.DefineProp("Reduce", {Call: __Reduce})
 
-	Reduce(this, callback, initialValue := "") {
+	__Reduce(this, callback, initialValue := "") {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -673,9 +673,9 @@ PatchArrayPrototype() {
 	;* array.ReduceRight(callback[, initialValue])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/ReduceRight.
-	Array.Prototype.DefineProp("ReduceRight", {Call: ReduceRight})
+	Array.Prototype.DefineProp("ReduceRight", {Call: __ReduceRight})
 
-	ReduceRight(this, callback, initialValue := "") {
+	__ReduceRight(this, callback, initialValue := "") {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -706,9 +706,9 @@ PatchArrayPrototype() {
 	;* array.Reverse()
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse.
-	Array.Prototype.DefineProp("Reverse", {Call: Reverse})
+	Array.Prototype.DefineProp("Reverse", {Call: __Reverse})
 
-	Reverse(this) {
+	__Reverse(this) {
 		for i, v in (m := this.Length - 1, this) {
 			this.InsertAt(m, this.RemoveAt(m - i))
 		}
@@ -728,9 +728,9 @@ PatchArrayPrototype() {
 	;* array.Slice([start, end])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice.
-	Array.Prototype.DefineProp("Slice", {Call: Slice})
+	Array.Prototype.DefineProp("Slice", {Call: __Slice})
 
-	Slice(this, start := 0, end := "") {
+	__Slice(this, start := 0, end := "") {
 		loop (r := [], start := (start >= 0) ? (Min(s := this.Length, start)) : (Max((s := this.Length) + start, 0)), ((end != "") ? ((end >= 0) ? (Min(s, end)) : (Max(s + end, 0))) : (s)) - start) {
 			r.Push(this[start++])
 		}
@@ -745,9 +745,9 @@ PatchArrayPrototype() {
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some.
 	;* Note:
 		;~ Calling this method on an empty array returns false for any condition.
-	Array.Prototype.DefineProp("Some", {Call: Some})
+	Array.Prototype.DefineProp("Some", {Call: __Some})
 
-	Some(this, callback) {
+	__Some(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -773,9 +773,9 @@ PatchArrayPrototype() {
 	;* array.Sort(callback)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort.
-	Array.Prototype.DefineProp("Sort", {Call: Sort})
+	Array.Prototype.DefineProp("Sort", {Call: __Sort})
 
-	Sort(this, callback) {
+	__Sort(this, callback) {
 		if (!(callback is Func || callback is Closure)) {
 			throw (TypeError(Format("{} is not a valid callback function.", Type(callback)), -1))
 		}
@@ -802,9 +802,9 @@ PatchArrayPrototype() {
 	;* array.Splice(start[, deleteCount, elements*])
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice.
-	Array.Prototype.DefineProp("Splice", {Call: Splice})
+	Array.Prototype.DefineProp("Splice", {Call: __Splice})
 
-	Splice(this, start, deleteCount := "", elements*) {
+	__Splice(this, start, deleteCount := "", elements*) {
 		loop (r := [], start := (start >= 0) ? (Min(s := this.Length, start)) : (Max((s := this.Length) + start, 0)), (deleteCount != "") ? (Max((s <= start + deleteCount) ? (s - start) : (deleteCount), 0)) : ((elements.Length) ? (0) : (s - start))) {
 			r.Push(this.RemoveAt(start))
 		}
@@ -821,9 +821,9 @@ PatchArrayPrototype() {
 	;* array.UnShift(elements*)
 	;* Description:
 		;* See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift.
-	Array.Prototype.DefineProp("UnShift", {Call: UnShift})
+	Array.Prototype.DefineProp("UnShift", {Call: __UnShift})
 
-	UnShift(this, elements*) {
+	__UnShift(this, elements*) {
 		this.InsertAt(0, elements*)
 
 		return (this.Length)

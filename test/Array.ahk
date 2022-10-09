@@ -1,12 +1,12 @@
-#Requires AutoHotkey v2.0-beta
+#Requires AutoHotkey v2.0-beta.9
 
 ;============ Auto-Execute ====================================================;
 ;======================================================  Include  ==============;
 
-#Include %A_ScriptDir%\..\..\Core.ahk
+#Include ..\..\Core.ahk
 
-#Include %A_ScriptDir%\..\..\Assert\Assert.ahk
-#Include %A_ScriptDir%\..\..\Console\Console.ahk
+#Include ..\..\Assert\Assert.ahk
+#Include ..\..\Console\Console.ahk
 
 ;======================================================  Setting  ==============;
 
@@ -31,15 +31,6 @@ Assert.SetLabel("Negative Lookups")
 Assert.IsEqual([0, 1, 2, 3, 4][-1], 4)
 Assert.IsEqual([0, 1, 2, 3, 4][-5], 0)
 
-;-------------------------------------------------------  Count  ---------------;
-;Assert.SetLabel("Count")
-
-;Assert.IsEqual([1, 2, , 4].Count, 4)
-;Assert.IsEqual([1, 2, , 4].Count(1), 3)
-;Assert.IsEqual([0].Count, 1)
-;Assert.IsEqual([""].Count, 1)
-;Assert.IsEqual([""].Count[1], 0)
-
 ;------------------------------------------------------- Length ---------------;
 Assert.SetLabel("Length")
 
@@ -48,7 +39,7 @@ Assert.IsEqual(test.Length, 3)
 test.Length := 5
 Assert.IsEqual(test, [1, "", 3, "", ""])
 Assert.IsEqual(test.Length, 5)
-;(test := [])[9] := 10  ;~ This now throws an error and I think that's fine. Arrays need to explicitly have their `.Length` increased, I used the same logic in Structure.ahk afterall.
+;(test := [])[9] := 10  ;~ This now throws an error and I think that's fine. Arrays need to explicitly have their `.Length` increased.
 ;Assert.IsEqual(test.Length, 10)
 
 ;------------------------------------------------------  Compact  --------------;
@@ -93,7 +84,7 @@ Assert.IsEqual(e, "*Swap")
 Assert.SetLabel("Unique")
 
 nested := [0]
-test := [nested, "1", 1, 2, [3], [4], 2, 2, a := {Five: 5}, "", a, , a]
+test := [nested, "1", 1, 2, [3], [4], 2, 2, a := {Five: 5}, "", "", a, a]
 Assert.IsEqual(test.Concat([nested, nested]).Unique(), [[0], 1, 2, [3], [4], {Five: 5}, ""])
 
 ;------------------------------------------------------- Concat ---------------;
@@ -244,7 +235,7 @@ Assert.IsFalse(["Red", "Green", "bLUe"].Includes("Blue"))
 ;------------------------------------------------------  IndexOf  --------------;
 Assert.SetLabel("IndexOf")
 
-test := ["ant", "bison", "camel", , "bison"]
+test := ["ant", "bison", "camel", "", "bison"]
 Assert.IsEqual(test.IndexOf("bison"), 1)
 Assert.IsEqual(test.IndexOf("bison", 2), 4)
 Assert.IsEqual(test.IndexOf("Marco"), -1)
