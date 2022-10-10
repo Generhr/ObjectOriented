@@ -26,29 +26,32 @@
 
 ;============ Auto-Execute ====================================================;
 
-PatchObjectPrototype()
+PatchObject()
 
 ;============== Function ======================================================;
 
-PatchObjectPrototype() {
+PatchObject() {
+
+	;-------------  Prototype  -----------------------------------------------------;
+	;-------------------------------------------------------  Print  ---------------;
 
 	;* object.Print()
 	;* Description:
 		;* Converts an object into a string to more easily see the structure.
-	Object.Prototype.DefineProp("Print", {Call: Print})
+	Object.Prototype.DefineProp("Print", {Call: __Print})
 
-	Print(this) {
+	__Print(this) {
 		if (count := ObjOwnPropCount(this)) {
-			string := "{"
+			out := "{"
 
 			for key, value in this.OwnProps() {
-				string .= key . ": " . ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
+				out .= key . ": " . ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
 			}
 		}
 		else {
-			string := "{}"
+			out := "{}"
 		}
 
-		return (string)
+		return (out)
 	}
 }

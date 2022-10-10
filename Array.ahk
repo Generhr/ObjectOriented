@@ -26,66 +26,11 @@
 
 ;============ Auto-Execute ====================================================;
 
-PatchArrayPrototype()
+PatchArray()
 
 ;============== Function ======================================================;
 
-Print(input) {
-	if (input is Array) {
-		if (length := input.Length) {
-			string := "["
-
-			for value in input {
-				if (!IsSet(value)) {
-					value := ""
-				}
-
-				string .= ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
-			}
-		}
-		else {
-			string := "[]"
-		}
-	}
-	else if (input is Object) {
-		if (count := ObjOwnPropCount(input)) {
-			string := "{"
-
-			for key, value in (input.OwnProps()) {
-				string .= key . ": " . ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
-			}
-		}
-		else {
-			string := "{}"
-		}
-	}
-	else {
-		string := input
-	}
-
-	return (string)
-}
-
-;* Range(start[, stop, step])
-;* Description:
-	;* Returns a sequence of integers starting at `start` with increments of `step`, ending at `stop` (noninclusive).  ;: https://pynative.com/python-range-function/
-Range(start, stop := "", step := 1) {
-	if (stop == "") {
-		stop := start, start := 0
-	}
-
-	if (!(IsInteger(start) && IsInteger(stop))) {
-		throw (TypeError("TypeError.", -1, Format("Range({}) may only contain integers.", [start, stop, step].Join(", "))))
-	}
-
-	loop (r := [], Max(Ceil((stop - start)/step), 0)) {
-		r.Push(start), start += step
-	}
-
-	return (r)
-}
-
-PatchArrayPrototype() {
+PatchArray() {
 
 	;----------------  AHK  --------------------------------------------------------;
 	;------------------------------------------------------- __Item ---------------;
@@ -179,21 +124,21 @@ PatchArrayPrototype() {
 
 	__Print(this) {
 		if (length := this.Length) {
-			string := "["
+			out := "["
 
 			for value in this {
 				if (!IsSet(value)) {
 					value := ""
 				}
 
-				string .= ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
+				out .= ((IsObject(value)) ? ((value.HasProp("Print")) ? (value.Print()) : (Type(value))) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
 			}
 		}
 		else {
-			string := "[]"
+			out := "[]"
 		}
 
-		return (string)
+		return (out)
 	}
 
 	;------------------------------------------------------  Compact  --------------;
@@ -332,18 +277,18 @@ PatchArrayPrototype() {
 	Array.Prototype.DefineProp("Concat", {Call: __Concat})
 
 	__Concat(this, values*) {
-		for i, v in (r := this.Clone(), values) {  ;~ Original array is untouched.
-			if (v is Array) {
-				if (v.Length) {  ;* Ignore if empty.
-					r.Push(v*)
+		for value in (out := this.Clone(), values) {  ;~ Original array is untouched.
+			if (value is Array) {
+				if (value.Length) {  ;* Ignore if empty.
+					out.Push(value*)
 				}
 			}
 			else {
-				r.Push(v)
+				out.Push(value)
 			}
 		}
 
-		return (r)
+		return (out)
 	}
 
 	;-------------------------------------------------------  Every  ---------------;
@@ -828,4 +773,59 @@ PatchArrayPrototype() {
 
 		return (this.Length)
 	}
+}
+
+Print(input) {
+	if (input is Array) {
+		if (length := input.Length) {
+			out := "["
+
+			for value in input {
+				if (!IsSet(value)) {
+					value := ""
+				}
+
+				out .= ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < length) ? (", ") : ("]"))
+			}
+		}
+		else {
+			out := "[]"
+		}
+	}
+	else if (input is Object) {
+		if (count := ObjOwnPropCount(input)) {
+			out := "{"
+
+			for key, value in (input.OwnProps()) {
+				out .= key . ": " . ((IsObject(value)) ? (Print(value)) : ((IsNumber(value)) ? (RegExReplace(value, "S)^0+(?=\d\.?)|(?=\.).*?\K\.?0*$")) : (Format('"{}"', value)))) . ((A_Index < count) ? (", ") : ("}"))
+			}
+		}
+		else {
+			out := "{}"
+		}
+	}
+	else {
+		out := input
+	}
+
+	return (out)
+}
+
+;* Range(start[, stop, step])
+;* Description:
+	;* Returns a sequence of integers starting at `start` with increments of `step`, ending at `stop` (noninclusive).  ;: https://pynative.com/python-range-function/
+Range(start, stop := "", step := 1) {
+	if (stop == "") {
+		stop := start, start := 0
+	}
+
+	if (!(IsInteger(start) && IsInteger(stop))) {
+		throw (TypeError("TypeError.", -1, Format("Range({}) may only contain integers.", [start, stop, step].Join(", "))))
+	}
+
+	loop (r := [], Max(Ceil((stop - start)/step), 0)) {
+		r.Push(start), start += step
+	}
+
+	return (r)
 }
