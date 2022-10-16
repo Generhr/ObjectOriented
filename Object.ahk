@@ -32,14 +32,11 @@ PatchObject()
 
 PatchObject() {
 
-	;-------------  Prototype  -----------------------------------------------------;
-	;-------------------------------------------------------  Print  ---------------;
+	Object.Prototype.DefineProp("Print", {Call: __Print})
 
 	;* object.Print()
 	;* Description:
 		;* Converts an object into a string to more easily see the structure.
-	Object.Prototype.DefineProp("Print", {Call: __Print})
-
 	__Print(this) {
 		if (count := ObjOwnPropCount(this)) {
 			out := "{"
