@@ -216,9 +216,23 @@ Assert.IsEqual([1, 2, [{3: "Three"}, "", [4, 5, [6, 7, [8, [[[[9]]]]]]]]].Flat(5
 ;------------------------------------------------------  ForEach  --------------;
 Assert.SetLabel("ForEach")
 
-test := [1, 3, "", 7]
-test.ForEach((value, *) => ((value is Number) ? (value - 1) : ("")))
-Assert.IsEqual(test, [0, 2, "", 6])
+(obj := Counter()).Add([2, 5, 9])
+Assert.IsEqual(obj.Sum, 16)
+Assert.IsEqual(obj.Count, 3)
+
+class Counter {
+
+	__New() {
+	  this.Sum := 0, this.Count := 0
+	}
+
+	Add(obj) {
+		obj.ForEach((entry, *) => (this.Sum += entry, ++this.Count))
+	}
+ }
+
+(words := ["one", "two", "three", "four"]).ForEach((word, *) => ((word == "two") ? (words.shift()) : ("")))
+Assert.IsEqual(words, ["two", "three", "four"])
 
 ;------------------------------------------------------ Includes --------------;
 Assert.SetLabel("Includes")
