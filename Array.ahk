@@ -82,7 +82,7 @@ PatchArray() {
 					if (__DefaultEnum(&oneIndex, &value)) {  ;* While the array has Items, retrieve one with `oneIndex` and assign Item to the for-loop's second value.
 						zeroIndex := oneIndex - 1
 
-						return (True)  ;* Continue enumerating since an Item had been returned.
+						return (true)  ;* Continue enumerating since an Item had been returned.
 					}
 				}
 			default:
@@ -287,8 +287,8 @@ PatchArray() {
 	/**
 	 * Merges two or more arrays. This method does not change the existing arrays, but instead returns a new array.
 	 * @example
-	 * array1 := ['a', 'b', 'c']
-	 * array2 := ['d', 'e', 'f']
+	 * array1 := ["a", "b", "c"]
+	 * array2 := ["d", "e", "f"]
 	 *
 	 * Console.Log(array1.Concat(array2))  ; ["a", "b", "c", "d", "e", "f"]
 	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat}
@@ -331,7 +331,7 @@ PatchArray() {
 			try  {
 				if ((element := this[index]) != "") {  ;~ `callback` is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.
 					if (!callback.Call(element, index, this)) {
-						return (False)
+						return (false)
 					}
 				}
 			}
@@ -340,7 +340,7 @@ PatchArray() {
 			}
 		}
 
-		return (True)
+		return (true)
 	}
 
 	;-------------------------------------------------------- Fill ----------------;
@@ -493,7 +493,7 @@ PatchArray() {
 		while (++index != length) {  ;~ The range of elements processed is set before the first invocation of `callback`. Therefore, `callback` will not run on elements that are appended to the array after the loop begins.
 			try  {
 				if ((element := this[index]) != "") {  ;~ `callback` is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.
-					this[index] := callback.Call(element, index, this)
+					callback.Call(element, index, this)
 				}
 			}
 			catch (IndexError) {
@@ -762,7 +762,7 @@ PatchArray() {
 		while (++index != length) {  ;~ The range of elements processed is set before the first invocation of `callback`. Therefore, `callback` will not run on elements that are appended to the array after the loop begins.
 			try  {
 				if ((element := this[index]) != "" && callback.Call(element, index, this)) {  ;~ `callback` is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.
-					return (True)
+					return (true)
 				}
 			}
 			catch (IndexError) {
@@ -770,7 +770,7 @@ PatchArray() {
 			}
 		}
 
-		return (False)
+		return (false)
 	}
 
 	;-------------------------------------------------------- Sort ----------------;
@@ -789,14 +789,14 @@ PatchArray() {
 			throw (TypeError("``callback`` must be a function.", -1, Type(callback)))
 		}
 
-		maxIndex := this.Length - 1, bool := True
+		maxIndex := this.Length - 1, bool := true
 
-		while (bool != False) {
-			bool := False
+		while (bool != false) {
+			bool := false
 
 			loop (maxIndex) {
 				if (callback.Call(this[index := A_Index - 1], this[A_Index]) > 0) {
-					bool := True
+					bool := true
 
 					temp := this[index], this[index] := this[A_Index], this[A_Index] := temp
 				}
