@@ -206,7 +206,7 @@ PatchArray() {
 			throw (IndexError("The array is empty.", -1))
 		}
 
-		return (this.Clone().Slice(0, number).Shuffle())
+		return (this.Clone().Shuffle().Slice(0, number))
 	}
 
 	;------------------------------------------------------  Shuffle  --------------;
