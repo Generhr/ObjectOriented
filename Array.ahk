@@ -1,9 +1,9 @@
-#Requires AutoHotkey v2.0-beta.12
+#Requires AutoHotkey v2.0.0
 
 /*
 * MIT License
 *
-* Copyright (c) 2022 Onimuru
+* Copyright (c) 2023 Onimuru
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -84,6 +84,8 @@ PatchArray() {
 
 						return (true)  ;* Continue enumerating since an Item had been returned.
 					}
+
+					return (false)
 				}
 			default:
 				throw (ValueError("No matching Enumerator found for this many for-loop variables.", -2, numberOfVars))
