@@ -1,9 +1,9 @@
-#Requires AutoHotkey v2.0-beta
+#Requires AutoHotkey v2.0.0
 
 /*
-* MIT License
+* The MIT License (MIT)
 *
-* Copyright (c) 2022 Onimuru
+* Copyright (c) 2020 - 2023, Chad Blease
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal

@@ -1,9 +1,9 @@
 #Requires AutoHotkey v2.0.0
 
 /*
-* MIT License
+* The MIT License (MIT)
 *
-* Copyright (c) 2023 Onimuru
+* Copyright (c) 2020 - 2023, Chad Blease
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -82,10 +82,10 @@ PatchArray() {
 					if (__DefaultEnum(&oneIndex, &value)) {  ;* While the array has Items, retrieve one with `oneIndex` and assign Item to the for-loop's second value.
 						zeroIndex := oneIndex - 1
 
-						return (true)  ;* Continue enumerating since an Item had been returned.
+						return (True)  ;* Continue enumerating since an Item had been returned.
 					}
 
-					return (false)
+					return (False)
 				}
 			default:
 				throw (ValueError("No matching Enumerator found for this many for-loop variables.", -2, numberOfVars))
@@ -333,7 +333,7 @@ PatchArray() {
 			try  {
 				if ((element := this[index]) != "") {  ;~ `callback` is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.
 					if (!callback.Call(element, index, this)) {
-						return (false)
+						return (False)
 					}
 				}
 			}
@@ -342,7 +342,7 @@ PatchArray() {
 			}
 		}
 
-		return (true)
+		return (True)
 	}
 
 	;-------------------------------------------------------- Fill ----------------;
@@ -764,7 +764,7 @@ PatchArray() {
 		while (++index != length) {  ;~ The range of elements processed is set before the first invocation of `callback`. Therefore, `callback` will not run on elements that are appended to the array after the loop begins.
 			try  {
 				if ((element := this[index]) != "" && callback.Call(element, index, this)) {  ;~ `callback` is invoked only for indexes of the array which have assigned values; it is not invoked for indexes which have been deleted or which have never been assigned values.
-					return (true)
+					return (True)
 				}
 			}
 			catch (IndexError) {
@@ -772,7 +772,7 @@ PatchArray() {
 			}
 		}
 
-		return (false)
+		return (False)
 	}
 
 	;-------------------------------------------------------- Sort ----------------;
@@ -791,14 +791,14 @@ PatchArray() {
 			throw (TypeError("``callback`` must be a function.", -1, Type(callback)))
 		}
 
-		maxIndex := this.Length - 1, bool := true
+		maxIndex := this.Length - 1, bool := True
 
-		while (bool != false) {
-			bool := false
+		while (bool != False) {
+			bool := False
 
 			loop (maxIndex) {
 				if (callback.Call(this[index := A_Index - 1], this[A_Index]) > 0) {
-					bool := true
+					bool := True
 
 					temp := this[index], this[index] := this[A_Index], this[A_Index] := temp
 				}
